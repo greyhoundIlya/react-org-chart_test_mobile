@@ -10,12 +10,13 @@ module.exports = function wrapText(text, width) {
 
   text[0].forEach(textNode => {
     const text = d3.select(textNode)
-    const x = text.attr('x')
-    const y = text.attr('y')
-    const dy = parseFloat(text.attr('dy'))
+    const x = text.attr('x') || 0
+    const y = text.attr('y') || 0
+    const dy = parseFloat(text.attr('dy')) || 0
     const lineHeight = 1.1
     const words = text
       .text()
+      .trim()
       .split(/\s+/)
       .reverse()
 
