@@ -9,10 +9,10 @@
   "files": [
     "dist/index.js"
   ],
-  "homepage": "https://unicef.github.io/react-org-chart",
+  "homepage": "https://greyhoundIlya.github.io/react-org-chart_test_mobile/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unicef/react-org-chart.git"
+    "url": "git+https://github.com/greyhoundIlya/react-org-chart_test_mobile"
   },
   "scripts": {
     "start": "webpack --watch --mode production",
