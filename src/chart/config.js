@@ -1,31 +1,31 @@
-const animationDuration = 350
+const animationDuration = 550
 const shouldResize = true
 
 // Nodes
-const nodeWidth = 140
+const nodeWidth = 240
 const nodeHeight = 180
-const nodeSpacing = 12
+const nodeSpacing = 32
 const nodePaddingX = 16
 const nodePaddingY = 16
 const avatarWidth = 48
-const nodeBorderRadius = 4
+const nodeBorderRadius = 8
 const margin = {
   top: 20,
-  right: 20,
+  right: 90,
   bottom: 20,
-  left: 20,
+  left: 90,
 }
 
 // Lines
-const lineType = 'angle'
-const lineDepthY = 120 /* Height of the line for child nodes */
+const lineType = "curve"
+const lineDepthY = 180 /* Height of the line for child nodes */
 
 // Colors
 const backgroundColor = '#fff'
-const borderColor = '#c9c9c9'
-const nameColor = '#222d38'
-const titleColor = '#617080'
-const reportsColor = '#92A0AD'
+const borderColor = '#e2e8f0'
+const nameColor = '#1e293b'
+const titleColor = '#64748b'
+const reportsColor = '#b82f6'
 
 const config = {
   margin,

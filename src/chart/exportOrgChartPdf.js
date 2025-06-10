@@ -73,8 +73,9 @@ function exportOrgChartPdf({ loadConfig }) {
   document.getElementById(`${id}-svg-container`).appendChild(step)
 
   // appending g element from svg
+  const isMobilePdfX = window.innerWidth <= 460 ? 300 : 87
   var g = document.getElementById(`${id}-svg-container`).querySelector('g')
-  g.setAttribute('transform', `translate(${translateX}, 2) scale(${scale})`)
+  g.setAttribute('transform', `translate(${isMobilePdfX}, 2) scale(${scale})`)
   var html = new XMLSerializer().serializeToString(
     document.getElementById(`${id}-svg-container`).querySelector('svg')
   )

@@ -5,7 +5,7 @@ module.exports = exportOrgChartImage
 function exportOrgChartImage({ loadConfig }) {
   const config = loadConfig()
   const { id, downlowdedOrgChart, nodeLeftX, nodeRightX, nodeY } = config
-  var w = nodeLeftX + nodeRightX
+  var w = window.innerWidth <= 460 ? 340 : nodeLeftX + nodeRightX
   var h = nodeY
   var ratio = w > 9000 ? 1 : 2
 

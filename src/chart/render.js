@@ -43,16 +43,23 @@ function render(config) {
   } = config
 
   // Compute the new tree layout.
-  const nodes = tree.nodes(treeData).reverse()
+  const nodes = window.innerWidth <= 460 ? tree.nodes(treeData) : tree.nodes(treeData).reverse()
   const links = tree.links(nodes)
 
   config.links = links
   config.nodes = nodes
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) {
-    d.y = d.depth * lineDepthY
-  })
+  if (typeof window !== 'undefined' && window.innerWidth <= 460) {
+    nodes.forEach((d, i) => {
+      d.x = 0
+      d.y = i * lineDepthY
+    })
+  } else {
+    nodes.forEach(d => {
+      d.y = d.depth * lineDepthY
+    })
+  }
 
   // Update the nodes
   const node = svg.selectAll('g.' + CHART_NODE_CLASS).data(
@@ -95,91 +102,150 @@ function render(config) {
 
   // Person Card Container
   nodeEnter
-    .append('rect')
-    .attr('class', d => (d.isHighlight ? `${PERSON_HIGHLIGHT} box` : 'box'))
-    .attr('width', nodeWidth)
-    .attr('height', nodeHeight)
-    .attr('id', d => d.id)
-    .attr('fill', backgroundColor)
-    .attr('stroke', borderColor)
-    .attr('rx', nodeBorderRadius)
-    .attr('ry', nodeBorderRadius)
-    .style('cursor', helpers.getCursorForNode)
+    .append("rect")
+    .attr("class", (d) => (d.isHighlight ? `${PERSON_HIGHLIGHT} box` : "box"))
+    .attr("width", nodeWidth)
+    .attr("height", nodeHeight)
+    .attr("id", (d) => d.id)
+    .attr("fill", "#E6F3FF")
+    .attr("stroke", "#ebeef2")
+    .attr("stroke-width", 2)
+    .attr("rx", 8)
+    .attr("ry", 8)
+    .style("cursor", "pointer")
 
-  const namePos = {
-    x: nodeWidth / 2,
-    y: nodePaddingY * 1.8 + avatarWidth,
-  }
-
-  const avatarPos = {
-    x: nodeWidth / 2 - avatarWidth / 2,
-    y: nodePaddingY / 2,
-  }
+  // Добавление прямоугольного блока
+  nodeEnter
+    .append("rect")
+    .attr("class", "custom-block")
+    .attr("width", 240)
+    .attr("height", 40)
+    .attr("x", 0)
+    .attr("y", 140)
+    .attr("fill", d => (d.children || d._children ? '#ebeef2' : '#31c8eb'))
+    .attr("stroke-width", 1)
+    .attr("rx", 5)
+    .attr("ry", 5);
 
   // Person's Name
   nodeEnter
     .append('text')
     .attr('class', PERSON_NAME_CLASS + ' unedited')
-    .attr('x', namePos.x)
-    .attr('y', namePos.y)
-    .attr('dy', '.3em')
-    .style('cursor', 'pointer')
-    .style('fill', nameColor)
-    .style('font-size', 14)
+    .attr('x', 140)
+    .attr('y', 62)
+    .style('fill', '#2C3E50')
+    .style('font-size', 16)
     .text(d => d.person.name)
-  // .on('click', onParentClick(config))
+  //.on('click', onParentClick(config))
 
   // Person's Title
   nodeEnter
-    .append('text')
-    .attr('class', PERSON_TITLE_CLASS + ' unedited')
-    .attr('x', nodeWidth / 2)
-    .attr('y', namePos.y + nodePaddingY * 2.4)
-    .attr('dy', '0.1em')
-    .style('font-size', 12)
-    .style('cursor', 'pointer')
-    .style('fill', titleColor)
-    .text(d => d.person.title)
+    .append("text")
+    .attr("class", "department-title")
+    .attr("x", nodeWidth / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", 12)
+    .style("font-weight", "bold")
+    .style("fill", "#2C3E50")
+    .text((d) => d.person.title)
 
-  const heightForTitle = 60 // getHeightForText(d.person.title)
-
-  // Person's Reports
+  // Заголовок департамента (верхняя часть карточки)
   nodeEnter
-    .append('text')
-    .attr('class', PERSON_REPORTS_CLASS)
-    .attr('x', nodePaddingX + 8)
-    .attr('y', namePos.y + nodePaddingY + heightForTitle)
-    .attr('dy', '.9em')
-    .style('font-size', 14)
-    .style('font-weight', 400)
-    .style('cursor', 'pointer')
-    .style('fill', reportsColor)
-    .text(helpers.getTextForTitle)
+    .append("text")
+    .attr("class", "department-title")
+    .attr("x", nodeWidth / 2)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", 12)
+    .style("font-weight", "bold")
+    .style("fill", "#2C3E50")
+    .text((d) => d.person.title)
+
 
   // Person's Avatar
   nodeEnter
     .append('image')
     .attr('id', d => `image-${d.id}`)
-    .attr('width', avatarWidth)
-    .attr('height', avatarWidth)
-    .attr('x', avatarPos.x)
-    .attr('y', avatarPos.y)
-    .attr('stroke', borderColor)
+    .attr('width', 42)
+    .attr('height', 42)
+    .attr('x', 20)
+    .attr('y', 36)
     .attr('s', d => {
       d.person.hasImage
         ? d.person.avatar
         : loadImage(d).then(res => {
-            covertImageToBase64(res, function(dataUrl) {
-              d3.select(`#image-${d.id}`).attr('href', dataUrl)
-              d.person.avatar = dataUrl
-            })
-            d.person.hasImage = true
-            return d.person.avatar
+          covertImageToBase64(res, function (dataUrl) {
+            d3.select(`#image-${d.id}`).attr('href', dataUrl)
+            d.person.avatar = dataUrl
           })
+          d.person.hasImage = true
+          return d.person.avatar
+        })
     })
     .attr('src', d => d.person.avatar)
-    .attr('href', d => d.person.avatar)
-    .attr('clip-path', 'url(#avatarClip)')
+    .attr('href', d => d.person.avatar || '..examples/assets/avatar-personnel.svg')
+
+  // Person's Reports
+  nodeEnter
+    .append('text')
+    .attr('class', PERSON_REPORTS_CLASS)
+    .attr('x', 70)
+    .attr('y', 150)
+    .attr('dy', '.9em')
+    .style('font-size', 16)
+    .style('font-weight', 600)
+    .style('cursor', 'pointer')
+    .style('fill', reportsColor)
+    .text(helpers.getTextForTitle)
+
+  // Линия разделитель под заголовком
+  nodeEnter
+    .append("line")
+    .attr("x1", 10)
+    .attr("y1", 30)
+    .attr("x2", nodeWidth - 10)
+    .attr("y2", 30)
+    .attr("stroke", "#31c8eb")
+    .attr("stroke-width", 1)
+    .attr("opacity", 0.3)
+
+
+  // Liния разделитель под заголовком департамента
+  nodeEnter
+    .append("line")
+    .attr("x1", 10)
+    .attr("y1", 85)
+    .attr("x2", nodeWidth - 10)
+    .attr("y2", 85)
+    .attr("stroke", "#31c8eb")
+    .attr("stroke-width", 1)
+    .attr("opacity", 0.3)
+
+  // Person's Title
+  nodeEnter
+    .append("text")
+    .attr("x", 15)
+    .attr("y", 100)
+    .style("font-size", 10)
+    .style("font-weight", "bold")
+    .style("fill", "#7F8C8D")
+    .text("Subordinates")
+
+
+
+  // Person's Title  сотрудников
+  nodeEnter
+    .append("text")
+    .attr("x", 15)
+    .attr("y", 115)
+    .style("font-size", 10)
+    .style("fill", "#7F8C8D")
+    .text((d) => {
+      const count = d.children ? d.children.length : d._children ? d._children.length : 0
+      return `${count} Employees`
+    })
+
 
   // Person's Link
   const nodeLink = nodeEnter
@@ -210,7 +276,7 @@ function render(config) {
   nodeUpdate
     .select('rect.box')
     .attr('fill', backgroundColor)
-    .attr('stroke', borderColor)
+    .attr('stroke', d => (d.children || d._children ? '#ebeef2' : '#31c8eb'))
 
   // Transition exiting nodes to the parent's new position.
   const nodeExit = node
@@ -232,7 +298,7 @@ function render(config) {
   renderLines(config)
 
   // Stash the old positions for transition.
-  nodes.forEach(function(d) {
+  nodes.forEach(function (d) {
     d.x0 = d.x
     d.y0 = d.y
   })
@@ -250,11 +316,11 @@ function render(config) {
   config.nodeY = nodeY
   config.nodeLeftX = nodeLeftX * -1
 
-  d3.select(downloadImageId).on('click', function() {
+  d3.select(downloadImageId).on('click', function () {
     exportOrgChartImage(config)
   })
 
-  d3.select(downloadPdfId).on('click', function() {
+  d3.select(downloadPdfId).on('click', function () {
     exportOrgChartPdf(config)
   })
   onConfigChange(config)

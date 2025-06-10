@@ -89,12 +89,12 @@ function init(options) {
     .attr(
       'transform',
       'translate(' +
-        parseInt(
-          childrenWidth + (elemWidth - childrenWidth * 2) / 2 - margin.left / 2
-        ) +
-        ',' +
-        48 +
-        ')'
+      parseInt(
+        childrenWidth + (elemWidth - childrenWidth * 2) / 2 - margin.left / 2
+      ) +
+      ',' +
+      48 +
+      ')'
     )
 
   // Define box shadow and avatar border radius
@@ -118,12 +118,38 @@ function init(options) {
   config.elemHeight = elemHeight
   config.render = render
 
-  // Defined zoom behavior
-  var zoom = d3.behavior
-    .zoom()
-    .scaleExtent([0.1, 2])
+
+  // Attach zoom behavior to the svg root
+  let lastWizz = null;
+  let zoom;
+
+  function updateWizz() {
+    const screenWidth = window.innerWidth;
+    const newWizz = screenWidth < 460 ? [3, 12] : [0.2, 2];
+
+    if (JSON.stringify(newWizz) !== JSON.stringify(lastWizz)) {
+      lastWizz = newWizz;
+
+      if (zoom) {
+        zoom.scaleExtent(newWizz);
+        d3.select("svg").call(zoom);
+      }
+    }
+
+    return newWizz;
+  }
+
+  zoom = d3.behavior.zoom()
+    .scaleExtent([1, 2])
     .duration(50)
-    .on('zoom', zoomed)
+    .on('zoom', zoomed);
+
+  let wizz = updateWizz();
+  d3.select("svg").call(zoom);
+
+  window.addEventListener('resize', () => {
+    wizz = updateWizz();
+  });
 
   // Attach zoom behavior to the svg root
   svgroot.call(zoom)
@@ -151,10 +177,10 @@ function init(options) {
     return d3
       .transition()
       .duration(350)
-      .tween('zoom', function() {
+      .tween('zoom', function () {
         var iTranslate = d3.interpolate(zoom.translate(), translate),
           iScale = d3.interpolate(zoom.scale(), scale)
-        return function(t) {
+        return function (t) {
           zoom.scale(iScale(t)).translate(iTranslate(t))
           zoomed()
         }
@@ -241,7 +267,11 @@ function init(options) {
       return
     }
 
-    svgroot.attr('width', elem.offsetWidth).attr('height', elem.offsetHeight)
+    svgroot
+      .attr('width', elem.offsetWidth)
+      .attr('height', elem.offsetHeight)
+      .on('touchstart', (event) => event.preventDefault())
+      .on('touchmove', (event) => event.preventDefault());
   }
 
   if (shouldResize) {

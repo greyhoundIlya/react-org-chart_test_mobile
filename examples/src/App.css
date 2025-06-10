@@ -15,16 +15,17 @@ body {
   cursor: move;
   height: 100%;
   width: 100%;
-  background-color: #f7f9fa;
 }
+
 .org-chart-person-name {
   font-weight: 500;
+  filter: drop-shadow(0px 0px 0.2px #000000);
 }
 .org-chart-person-link:hover g {
-  fill: #409cf9 !important;
+  fill: #ffffff !important;
 }
 .org-chart-node:hover .org-chart-person-reports {
-  fill: #409cf9 !important;
+  fill: #ffffff !important;
 }
 .org-chart-person-dept.engineering {
   fill: #4caf50 !important;
@@ -35,14 +36,8 @@ body {
 .org-chart-person-dept.product {
   fill: #d500f9 !important;
 }
-.org-chart-person-dept.hr {
-  fill: #2196f3 !important;
-}
 .org-chart-person-dept.marketing {
   fill: #f44336 !important;
-}
-.org-chart-person-dept.design {
-  fill: #26c6da !important;
 }
 
 .zoom-buttons {
@@ -51,49 +46,25 @@ body {
   left: 0;
 }
 
-.download-buttons {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
 .zoom-button {
+  font-size: 16px;
+  background-color: #55c0ed;
+  border-radius: 4px;
   width: 40px;
   height: 40px;
   display: block !important;
   margin: 8px;
+  border: none;
+  touch-action: manipulation;
+}
+.zoom-button:hover {
+  color: #ffffff;
+  background-color: #357894;
+}
+.org-chart-node:hover .box {
+  filter: drop-shadow(0px 0px 5px #55c0ed);
 }
 
-.btn {
-  font-size: 0.875rem;
-  text-transform: none;
-  text-decoration-line: none;
-  display: inline-block;
-  font-weight: 600;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  border-radius: 0.125rem;
-  cursor: pointer;
-  margin: 6px;
-}
-
-.btn-outline-primary {
-  color: #374ea2;
-  border-color: #374ea2;
-}
-
-.btn-outline-primary:not(:disabled):not(.disabled):active {
-  color: #fff;
-  background-color: #374ea2;
-  border-color: #374ea2;
-}
-
-.github-link {
-  font-size: 16px;
-  margin-left: 8px;
-  margin-right: 16px;
+.org-chart-person-reports:hover .text {
+  filter: drop-shadow(0px 0px 5px #55c0ed);
 }
