@@ -1,10 +1,10 @@
-const animationDuration = 550
+const animationDuration = 350
 const shouldResize = true
 
 // Nodes
 const nodeWidth = 240
 const nodeHeight = 180
-const nodeSpacing = 32
+const nodeSpacing = 12
 const nodePaddingX = 16
 const nodePaddingY = 16
 const avatarWidth = 48
@@ -18,7 +18,7 @@ const margin = {
 
 // Lines
 const lineType = "curve"
-const lineDepthY = 180 /* Height of the line for child nodes */
+const lineDepthY = 120 /* Height of the line for child nodes */
 
 // Colors
 const backgroundColor = '#fff'

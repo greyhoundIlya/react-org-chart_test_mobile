@@ -17,6 +17,7 @@ export default class App extends React.Component {
     }
   }
 
+
   getChild = id => {
     switch (id) {
       case 100:

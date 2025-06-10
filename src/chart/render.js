@@ -50,15 +50,21 @@ function render(config) {
   config.nodes = nodes
 
   // Normalize for fixed-depth.
-  if (typeof window !== 'undefined' && window.innerWidth <= 460) {
+  if (window.innerWidth <= 460) {
     nodes.forEach((d, i) => {
-      d.x = 0
-      d.y = i * lineDepthY
-    })
+      d.x = 0;
+      d.y = i * lineDepthY;
+    });
+
+    // Установка transform для первого узла
+    if (nodes.length > 0) {
+      const firstNode = nodes[0];
+      firstNode.transform = `translate(163.03263408870134,-291.5313204169753) scale(2.141914751857557)`;
+    }
   } else {
     nodes.forEach(d => {
-      d.y = d.depth * lineDepthY
-    })
+      d.y = d.depth * lineDepthY;
+    });
   }
 
   // Update the nodes
@@ -84,21 +90,9 @@ function render(config) {
     .enter()
     .insert('g')
     .attr('class', CHART_NODE_CLASS)
-    .attr('transform', `translate(${parentNode.x0}, ${parentNode.y0})`)
-    .on('click', window.innerWidth <= 460 ? mobileOnClick(config) : onClick(config))
+    .attr('transform', d => d.transform || `translate(${parentNode.x0}, ${parentNode.y0})`)
+    .on('click', onClick(config))
 
-  // Person Card Shadow
-  nodeEnter
-    .append('rect')
-    .attr('width', nodeWidth)
-    .attr('height', nodeHeight)
-    .attr('fill', backgroundColor)
-    .attr('stroke', borderColor)
-    .attr('rx', nodeBorderRadius)
-    .attr('ry', nodeBorderRadius)
-    .attr('fill-opacity', 0.05)
-    .attr('stroke-opacity', 0.025)
-    .attr('filter', 'url(#boxShadow)')
 
   // Person Card Container
   nodeEnter
@@ -108,7 +102,7 @@ function render(config) {
     .attr("height", nodeHeight)
     .attr("id", (d) => d.id)
     .attr("fill", "#E6F3FF")
-    .attr("stroke", "#ebeef2")
+    .attr("stroke", "#31c8eb")
     .attr("stroke-width", 2)
     .attr("rx", 8)
     .attr("ry", 8)
@@ -150,6 +144,7 @@ function render(config) {
     .style("fill", "#2C3E50")
     .text((d) => d.person.title)
 
+
   // Заголовок департамента (верхняя часть карточки)
   nodeEnter
     .append("text")
@@ -190,8 +185,8 @@ function render(config) {
   nodeEnter
     .append('text')
     .attr('class', PERSON_REPORTS_CLASS)
-    .attr('x', 70)
-    .attr('y', 150)
+    .attr('x', 69)
+    .attr('y', 149)
     .attr('dy', '.9em')
     .style('font-size', 16)
     .style('font-weight', 600)

@@ -118,38 +118,12 @@ function init(options) {
   config.elemHeight = elemHeight
   config.render = render
 
-
-  // Attach zoom behavior to the svg root
-  let lastWizz = null;
-  let zoom;
-
-  function updateWizz() {
-    const screenWidth = window.innerWidth;
-    const newWizz = screenWidth < 460 ? [3, 12] : [0.2, 2];
-
-    if (JSON.stringify(newWizz) !== JSON.stringify(lastWizz)) {
-      lastWizz = newWizz;
-
-      if (zoom) {
-        zoom.scaleExtent(newWizz);
-        d3.select("svg").call(zoom);
-      }
-    }
-
-    return newWizz;
-  }
-
-  zoom = d3.behavior.zoom()
-    .scaleExtent([1, 2])
+  // Defined zoom behavior
+  var zoom = d3.behavior
+    .zoom()
+    .scaleExtent([0.3, 8])
     .duration(50)
-    .on('zoom', zoomed);
-
-  let wizz = updateWizz();
-  d3.select("svg").call(zoom);
-
-  window.addEventListener('resize', () => {
-    wizz = updateWizz();
-  });
+    .on('zoom', zoomed)
 
   // Attach zoom behavior to the svg root
   svgroot.call(zoom)
@@ -269,9 +243,7 @@ function init(options) {
 
     svgroot
       .attr('width', elem.offsetWidth)
-      .attr('height', elem.offsetHeight)
-      .on('touchstart', (event) => event.preventDefault())
-      .on('touchmove', (event) => event.preventDefault());
+      .attr('height', elem.offsetHeight )
   }
 
   if (shouldResize) {
